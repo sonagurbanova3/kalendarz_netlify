@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kalendarz Funkcjonariusza</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Dodane style do popupa stanowisk */
+    #position-popup .popup-content {
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 20px;
+      background: #1e1e1e;
+      border-radius: 12px;
+    }
+
+    .cancel-btn {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      background: #000000;
+      border: 1px solid #2c2f4a;
+      border-radius: 8px;
+      margin-top: 20px;
+    }
+
+    .position-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+      gap: 10px;
+    }
+
+    @media (max-width: 600px) {
+      .position-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .position-btn {
+      padding: 10px;
+      background: #2c2f4a;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+    }
+
+    .popup {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: #1e1e1e;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    .popup.hidden {
+      display: none;
+    }
+
+    .popup-content {
+      background: #1e1e1e;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 500px;
+      width: 90%;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Kalendarz Funkcjonariusza</h1>
+
+    <label for="system">Wybierz system pracy:</label>
+    <select id="system">
+      <option value="8">Jednozmianowy (8h)</option>
+      <option value="12">Dwuzmianowy (12h)</option>
+      <option value="48">Czterozmianowy (dzien/noc/48h wolne)</option>
+    </select>
+
+    <div id="calendar-header">
+      <button id="prev-month">&larr;</button>
+      <span id="calendar-title"></span>
+      <button id="next-month">&rarr;</button>
+    </div>
+
+    <div id="calendar"></div>
+
+    <div id="note-display" class="note-display hidden">
+      <h3>Notatka na <span id="note-date"></span></h3>
+      <div id="note-content"></div>
+    </div>
+
+    <div class="summary">
+      <p>Godziny pracy: <span id="worked-hours">0</span></p>
+      <p>Nadgodziny: <span id="overtime">0</span></p>
+      <p>Dni urlopu: <span id="holiday-days">0</span></p>
+      <p>Dni L4: <span id="sick-days">0</span></p>
+      <p>Planowane godziny: <span id="planned-hours">0</span>h</p>
+      <button id="save-to-server">Zapisz dane na serwer</button>
+
+    </div>
+  </div>
+
+  <!-- Popup formularz -->
+  <div id="day-popup" class="popup hidden">
+    <div class="popup-content">
+      <br>
+      <label><input type="checkbox" id="popup-holiday" /> Urlop</label><br>
+      <label><input type="checkbox" id="popup-sick" /> Zwolnienie lekarskie</label><br>
+      <label><input type="checkbox" id="popup-overtime-free-day" /> Wolne za nadgodziny</label><br>
+
+      <div id="confirmed-wrapper">
+        <label><input type="checkbox" id="popup-confirmed" /> Przepracowano</label><br>
+      </div>
+
+      <h3>Ustawienia dnia: <span id="popup-date"></span></h3>
+
+      <button id="show-positions-btn">Wybierz stanowisko</button>
+
+      <label for="popup-position">Stanowisko:</label>
+      <select id="popup-position">
+        <option value="">Brak</option>
+      </select>
+
+      <label>Nadgodziny (opcjonalnie):</label>
+      <div class="overtime-input">
+        <input id="popup-overtime-hours" type="number" min="0" placeholder="h" style="width: 60px;"> h
+        <input id="popup-overtime-minutes" type="number" min="0" max="59" placeholder="min" style="width: 60px;"> min
+      </div>
+      
+
+      <label>Notatka:</label>
+      <textarea id="popup-note" rows="3" placeholder="Notatka..." style="width: 100%; margin-top: 10px;"></textarea>
+
+      <div class="popup-buttons">
+        <button id="popup-save">Zapisz</button>
+        <button id="popup-cancel">Anuluj</button>
+      </div>
+
+      <div class="popup-remove-buttons">
+        <hr>
+        <button id="remove-note">Usuń notatkę</button>
+        <button id="remove-worked">Usuń "przepracowano"</button>
+        <button id="remove-holiday">Usuń urlop</button>
+        <button id="remove-sick">Usuń L4</button>
+        <button id="remove-overtime">Usuń nadgodziny</button>
+        <button id="remove-all">Usuń wszystkie dane z dnia</button>
+      </div>
+    </div>
+  </div>
+
+ <!-- Popup ze stanowiskami -->
+<div id="position-popup" class="popup hidden">
+    <div class="popup-overlay">
+      <div class="popup-content">
+        <h3>Wybierz stanowisko</h3>
+        <div class="position-grid">
+          <script>
+            for (let i = 1; i <= 60; i++) {
+              document.write(`<button class="position-btn" data-position="S${i}">S${i}</button>`);
+            }
+          </script>
+        </div>
+        <button id="cancel-position-select" class="cancel-btn">Anuluj</button>
+      </div>
+    </div>
+  </div>
+  
+
+  <script src="script.js"></script>
+</body>
+</html>

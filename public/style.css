@@ -1,0 +1,432 @@
+
+/* === Reset & Base === */
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+    padding: 20px;
+  }
+  
+  .container {
+    max-width: 1000px;
+    margin: auto;
+  }
+  
+  /* === Nagłówki dni tygodnia === */
+  #calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+    margin-top: 20px;
+  }
+  
+  .day-header {
+    text-align: center;
+    font-weight: 600;
+    background: #2e2e2e;
+    padding: 10px;
+    border-radius: 8px;
+    color: #f0f0f0;
+  }
+  
+  /* === Dni w kalendarzu === */
+  .day {
+    background: #2c2c2c;
+    padding: 12px;
+    border: 1px solid #3a3a3a;
+    border-radius: 10px;
+    cursor: pointer;
+    position: relative;
+    transition: background 0.2s ease, transform 0.1s ease;
+  }
+  
+  .day:hover {
+    background: #3a3a3a;
+    transform: translateY(-2px);
+  }
+  
+  .day .info {
+    font-size: 0.85em;
+    color: #ccc;
+    margin-top: 8px;
+  }
+  
+  /* === Typy dni === */
+  .day.weekend {
+    background: #404040;
+  }
+  
+  .day.worked {
+    border: 2px solid #28a745;
+  }
+  
+  .day.holiday {
+    background: #3c593c;
+  }
+  
+  .day.sick {
+    background: #5c2e2e;
+  }
+  
+  .day.free-day {
+    background: #5c5a3c;
+  }
+  
+  .day.planned {
+    border: 2px dashed #ff9800;
+  }
+  
+  /* === Popup === */
+  .popup {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+  }
+  
+  .popup.hidden {
+    display: none;
+  }
+  
+  .popup-content {
+    background: #2e2e2e;
+    padding: 25px;
+    border-radius: 12px;
+    width: 350px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+    color: #f0f0f0;
+  }
+  
+  /* === Popup Buttons === */
+  .popup-buttons {
+    text-align: right;
+    margin-top: 15px;
+  }
+  
+  .popup-buttons button {
+    margin-left: 10px;
+    padding: 8px 14px;
+    font-size: 0.9em;
+    border: none;
+    border-radius: 6px;
+    background-color: #444;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+  
+  .popup-buttons button:hover {
+    background-color: #666;
+  }
+  
+  /* === Tabela pozycji === */
+  .position-table-inner {
+    width: 100%;
+    margin-bottom: 10px;
+    border-collapse: collapse;
+  }
+  
+  .position-table-inner td {
+    padding: 4px;
+  }
+  
+  .position-btn {
+    padding: 6px 10px;
+    font-size: 0.9em;
+    cursor: pointer;
+    border: 1px solid #555;
+    background: #3a3a3a;
+    color: #fff;
+    border-radius: 6px;
+    width: 100%;
+    transition: background 0.2s ease, border 0.2s ease;
+  }
+  
+  .position-btn:hover {
+    background: #505050;
+  }
+  
+  .position-btn.selected {
+    background: #007bff;
+    color: #fff;
+    border-color: #007bff;
+  }
+  
+  /* === Ikonka notatki === */
+  .note-icon {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    filter: invert(100%);
+  }
+  
+  /* === Wyświetlanie notatki === */
+  .note-display {
+    margin-top: 25px;
+    padding: 15px;
+    background: #2c2c2c;
+    border: 2px solid #555;
+    border-radius: 10px;
+    color: #ddd;
+  }
+  
+  .note-display.hidden {
+    display: none;
+  }
+  /* === Kontener dnia – dostosowany do mniejszych ekranów === */
+.day-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 10px;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-y: auto;
+  }
+  
+  /* Scrollowanie tylko jeśli potrzeba */
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background-color: #1e1e1e;
+    color: #f0f0f0;
+    font-family: 'Segoe UI', sans-serif;
+  }
+  
+  main {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  /* === Sekcja pola z responsywnością === */
+  .input-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    align-items: center;
+  }
+  
+  /* Checkbox – mały jak wcześniej, ale stylowy */
+  input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: #007bff;
+    cursor: pointer;
+  }
+  
+  /* Styl nazw pól przy checkboxach */
+  .label-small {
+    font-size: 0.95rem;
+    margin-left: 4px;
+    display: inline-block;
+  }
+  
+  /* Ulepszenie ogólnego wyglądu elementów w rzędach */
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+  }
+  
+  /* Responsywność dla małych ekranów */
+  @media (max-width: 600px) {
+    .input-group,
+    .row {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  
+    button {
+      width: 100%;
+    }
+  }
+  
+
+
+  #position-popup {
+    max-height: 90vh; /* max wysokość na ekranie */
+    overflow-y: auto; /* umożliwia przewijanie */
+    padding: 20px;
+    background: rgba(0,0,0,0.4);
+    border-radius: 12px;
+  }
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  select, button {
+    background-color: #2c2f4a; /* ciemny granat / fiolet */
+    color: white;
+    padding: 0px 12px;
+    border: none;
+    border-radius: 6px;
+    margin: 5px 0;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s ease;
+  }
+  
+  select:hover, button:hover {
+    background-color: #3a3e5c; /* jaśniejszy odcień na hover */
+  }
+  
+  select:focus, button:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px #6c5ce7; /* efekt focusa */
+  }
+
+  input[type="text"], textarea {
+    background-color: #2c2f4a;
+    color: white;
+    padding: 0px 12px;
+    border: none;
+    border-radius: 6px;
+    margin: 3px 0;
+    font-size: 14px;
+  }
+  
+  input::placeholder, textarea::placeholder {
+    color: #bbb;
+  }
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Popup stanowisk */
+.position-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin-top: 15px;
+  }
+  
+  #position-popup .popup-content {
+    width: 400px;
+  }
+  
+  #position-popup .position-btn {
+    padding: 10px;
+    font-size: 14px;
+  }
+  #position-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #1e1e1e;
+    z-index: 9999;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+    padding: 1rem;
+  }
+  
+  #position-popup.hidden {
+    display: none;
+  }
+  
+  
+  #calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    padding: 10px;
+    box-sizing: border-box;
+  }
+  
+  .day {
+    min-height: 60px;
+    font-size: 12px;
+    padding: 4px;
+  }
+  
+  @media (max-width: 600px) {
+    .day {
+      font-size: 10px;
+      padding: 2px;
+      min-height: 50px;
+    }
+  
+    .day-header {
+      font-size: 11px;
+    }
+  
+    #calendar-title {
+      font-size: 16px;
+    }
+  
+    .info {
+      font-size: 9px;
+    }
+  }
+  
+
+  .cancel-btn {
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    background: #ddd;
+    border: none;
+    border-radius: 8px;
+    width: 100%;
+    font-size: 16px;
+  }
+  #position-popup {
+    max-height: 100vh;
+    overflow-y: auto;
+    padding-bottom: 4rem; /* miejsce na przycisk */
+  }
+    
+.summary{
+    margin-left: 20px;
+  }
